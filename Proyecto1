@@ -1,0 +1,114 @@
+; =============================================================================
+; Proyecto Módulo 1 - Visor de Memoria (Edición UASM x64)
+; =============================================================================
+
+; Prototipo de la función nativa del sistema para impresión en consola
+extern printf : proc
+
+.data
+    ; R1: Arreglo de 10 elementos de 64 bits (DQ) con valores a elección
+    arreglo     DQ 5, 10, 15, 20, 25, 30, 35, 40, 45, 50
+    
+    ; RT3: Cadena de formato para printf 
+    ; %016llX asegura 16 dígitos hexadecimales, rellena con ceros y usa MAYÚSCULAS
+    formato     DB "Direccion: %016llX Valor: %016llX", 13, 10, 0
+
+.code
+
+; =============================================================================
+; Función Principal
+; =============================================================================
+main proc
+    ; RT4: Convención de llamada de Windows x64.
+    ; Reservamos el "Shadow Space" obligatorio (32 bytes) + alineación a 16 bytes.
+    sub rsp, 28h
+
+    ; R3: Inicializamos el registro puntero al inicio del arreglo
+    lea rbx, [arreglo]
+    
+    ; R2: Usamos un contador en R12 para no perder el valor en las llamadas a funciones
+    mov r12, 10
+
+recorrer_arreglo:
+    ; RT4: Preparación de parámetros para 'printf' según la convención de Windows
+    ; RCX = Puntero a la cadena de formato
+    ; RDX = Primer argumento (Dirección de memoria del elemento actual)
+    ; R8  = Segundo argumento (Valor contenido en esa dirección)
+    
+    lea rcx, [formato]
+    mov rdx, rbx                ; Pasamos la dirección que tiene el puntero
+    mov r8,  [rbx]              ; Pasamos el valor de 64 bits que apunta RBX
+    
+    call printf                 ; Llamada nativa del sistema para salida en consola
+
+    ; R3: Avanzamos el puntero al siguiente elemento de 64 bits (8 bytes)
+    add rbx, 8
+    
+    ; R2: Decrementamos el contador y repetimos si no ha llegado a cero
+    dec r12
+    jnz recorrer_arreglo
+
+    ; R5 / RT1: Terminación limpia devolviendo 0 en EAX y liberando la pila
+    xor eax, eax
+    add rsp, 28h
+    ret
+main endp
+
+end
+; =============================================================================
+; Proyecto Módulo 1 - Visor de Memoria (Edición UASM x64)
+; =============================================================================
+
+; Prototipo de la función nativa del sistema para impresión en consola
+extern printf : proc
+
+.data
+    ; R1: Arreglo de 10 elementos de 64 bits (DQ) con valores a elección
+    arreglo     DQ 5, 10, 15, 20, 25, 30, 35, 40, 45, 50
+    
+    ; RT3: Cadena de formato para printf 
+    ; %016llX asegura 16 dígitos hexadecimales, rellena con ceros y usa MAYÚSCULAS
+    formato     DB "Direccion: %016llX Valor: %016llX", 13, 10, 0
+
+.code
+
+; =============================================================================
+; Función Principal
+; =============================================================================
+main proc
+    ; RT4: Convención de llamada de Windows x64.
+    ; Reservamos el "Shadow Space" obligatorio (32 bytes) + alineación a 16 bytes.
+    sub rsp, 28h
+
+    ; R3: Inicializamos el registro puntero al inicio del arreglo
+    lea rbx, [arreglo]
+    
+    ; R2: Usamos un contador en R12 para no perder el valor en las llamadas a funciones
+    mov r12, 10
+
+recorrer_arreglo:
+    ; RT4: Preparación de parámetros para 'printf' según la convención de Windows
+    ; RCX = Puntero a la cadena de formato
+    ; RDX = Primer argumento (Dirección de memoria del elemento actual)
+    ; R8  = Segundo argumento (Valor contenido en esa dirección)
+    
+    lea rcx, [formato]
+    mov rdx, rbx                ; Pasamos la dirección que tiene el puntero
+    mov r8,  [rbx]              ; Pasamos el valor de 64 bits que apunta RBX
+    
+    call printf                 ; Llamada nativa del sistema para salida en consola
+
+    ; R3: Avanzamos el puntero al siguiente elemento de 64 bits (8 bytes)
+    add rbx, 8
+    
+    ; R2: Decrementamos el contador y repetimos si no ha llegado a cero
+    dec r12
+    jnz recorrer_arreglo
+
+    ; R5 / RT1: Terminación limpia devolviendo 0 en EAX y liberando la pila
+    xor eax, eax
+    add rsp, 28h
+    ret
+main endp
+
+end
