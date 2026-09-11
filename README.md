@@ -22,10 +22,10 @@ Para compilar y enlazar el proyecto desde la consola de comandos de Windows, eje
 
 ```bash
 # 1. Ensamblar el código fuente con UASM generando el archivo objeto (.obj)
-uasm64 -win64 visor.asm
+uasm64 -win64 Proyecto_1.asm
 
 # 2. Enlazar con GoLink apuntando a msvcrt.dll para resolver la función printf
-golink /console /entry main visor.obj msvcrt.dll
+golink /console /entry main Proyecto_1.obj msvcrt.dll
 ```
 
 ## 4. Capturas de Pantalla (Evidencia de Ejecución)
